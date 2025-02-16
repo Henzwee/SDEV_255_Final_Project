@@ -7,9 +7,9 @@
             event.preventDefault(); // Prevent the default form submission
             var role = document.getElementById("role").value;
             if (role === "student") {
-                window.location.href = "/public/student.html";
+                window.location.href = "public/student.html"; // Fixed relative path
             } else if (role === "teacher") {
-                window.location.href = "/public/teacher.html";
+                window.location.href = "public/teacher.html"; // Fixed relative path
             } else {
                 alert('Invalid role'); // Handle empty role submission
             }
