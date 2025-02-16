@@ -2,34 +2,36 @@
 <html>
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="public/styles.css">
+    <link rel="stylesheet" href="public/styles.css"> 
     <script>
         function handleLogin(event) {
-            event.preventDefault(); // Prevent the default form submission
+            event.preventDefault(); 
             var role = document.getElementById("role").value;
             if (role === "student") {
-                window.location.href = "public/student.html"; // Fixed relative path
+                window.location.href = "public/student.html"; 
             } else if (role === "teacher") {
-                window.location.href = "public/teacher.html"; // Fixed relative path
+                window.location.href = "public/teacher.html"; 
             } else {
-                alert('Invalid role'); // Handle empty role submission
+                alert('Invalid role'); 
             }
         }
     </script>
 </head>
 <body>
-    <h1>Login</h1>
-    <form onsubmit="handleLogin(event)"> 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form onsubmit="handleLogin(event)">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
 
-        <label for="role">Role:</label>
-        <select id="role" name="role">
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-        </select><br><br>
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select><br><br>
 
-        <button type="submit">Login</button>
-    </form>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
 </html>

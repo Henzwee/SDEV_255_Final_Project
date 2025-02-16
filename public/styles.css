@@ -99,3 +99,14 @@ nav ul li a:hover {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     width: 50%;
 }
+
+/* Page container for add_courses.html */
+.add-course-container {
+    padding: 20px;
+    text-align: center;
+    margin-top: 80px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+}
