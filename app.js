@@ -17,9 +17,9 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     const role = req.body.role;
     if (role === 'student') {
-        res.redirect('/student.html');
+        res.redirect('views/student.html');
     } else if (role === 'teacher') {
-        res.redirect('/teacher.html');
+        res.redirect('views/teacher.html');
     } else {
         res.send('Invalid role');
     }
