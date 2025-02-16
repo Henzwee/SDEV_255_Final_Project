@@ -10,16 +10,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve index.html for the root route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Routes for handling form submissions and redirecting to static pages
 app.post('/login', (req, res) => {
     const role = req.body.role;
     if (role === 'student') {
-        res.redirect('views/student.html');
+        res.redirect('/public/student.html');
     } else if (role === 'teacher') {
-        res.redirect('views/teacher.html');
+        res.redirect('/public/teacher.html');
     } else {
         res.send('Invalid role');
     }
