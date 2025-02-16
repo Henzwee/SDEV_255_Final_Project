@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Page</title>
 </head>
 <body>
-    <h1>Welcome, <%= user %> (Student)</h1>
+    <h1>Welcome, Student</h1>
     <p>This is the student-specific content.</p>
     <nav>
         <ul>
             <li id="add-courses-link" style="display:none;"><a href="add_courses.html">Add Courses</a></li>
             <li id="create-courses-link" style="display:none;"><a href="create_courses.html">Create/Delete Courses</a></li>
             <li><a href="schedule.html">My Courses</a></li>
-            <li><a href="index.html" id="logout-link">Log Out</a></li>
+            <li><a href="index.html">Log Out</a></li>
         </ul>
     </nav>
 
     <script>
+        // modify for static html
         document.addEventListener("DOMContentLoaded", function() {
-            var userRole = "student";
+            var userRole = "student"; 
             if (userRole === "student") {
                 document.getElementById("add-courses-link").style.display = "block";
             }

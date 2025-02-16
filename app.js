@@ -4,28 +4,28 @@ const path = require('path');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
 
-// get static html files
+// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve index.html for the root route
 app.get('/', (req, res) => {
-    res.render('index');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-//login for role
+// Routes for handling form submissions and redirecting to static pages
 app.post('/login', (req, res) => {
     const role = req.body.role;
     if (role === 'student') {
-        res.render('student', { user: req.body.username });
+        res.redirect('/student.html');
     } else if (role === 'teacher') {
-        res.render('teacher', { user: req.body.username });
+        res.redirect('/teacher.html');
     } else {
         res.send('Invalid role');
     }
 });
 
-// routes for html pages
+// Serve other static HTML files
 app.get('/add_courses.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'add_courses.html'));
 });

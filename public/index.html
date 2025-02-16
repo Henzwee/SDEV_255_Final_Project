@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent the default form submission
+            var role = document.getElementById("role").value;
+            if (role === "student") {
+                window.location.href = "student.html";
+            } else if (role === "teacher") {
+                window.location.href = "teacher.html";
+            } else {
+                alert('Invalid role'); // Handle empty role submission
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Login</h1>
+    <form onsubmit="handleLogin(event)"> 
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="role">Role:</label>
+        <select id="role" name="role">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+        </select><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
