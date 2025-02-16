@@ -3,27 +3,28 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     display: flex;
-    flex-direction: column;  /* Align items vertically */
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    flex-direction: column; /* Ensure content is in a column */
 }
 
-/* Center the form */
-form {
+/* Center the login form and apply the box around it */
+.login-container {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Box shadow around the login form */
     text-align: center;
     width: 300px;
+    margin-top: 20px;
 }
 
-/* Center the Login heading above the form */
+/* Header styling for the login page */
 h1 {
+    margin-bottom: 20px;
     text-align: center;
-    margin-bottom: 20px;  /* Adds space between the heading and form */
 }
 
 /* Style inputs and dropdown */
@@ -33,7 +34,7 @@ input, select {
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;  /* Ensures padding and border are included in the total width */
+    box-sizing: border-box;
 }
 
 /* Style the button */
@@ -50,4 +51,47 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+/* Teacher Page Navbar */
+nav {
+    background-color: #007bff; /* Blue background for the navbar */
+    padding: 10px;
+    position: sticky; /* Sticks to the top */
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+/* Style for the navigation links in Teacher Page */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #0056b3;
+    border-radius: 5px;
+}
+
+/* Additional styling for Teacher content */
+.container {
+    padding: 20px;
+    text-align: center;
+    margin-top: 60px; /* Add margin to push content below navbar */
 }
