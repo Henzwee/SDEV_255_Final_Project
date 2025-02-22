@@ -22,7 +22,11 @@ document.addEventListener("DOMContentLoaded", function() {
   // Function to display courses in the teacher's schedule
   function displayCourses(data) {
     const courseList = document.getElementById('course-list');
-    const courses = data.record.courses;
+    if (!courseList) {
+      console.error('Course list element not found.');
+      return;
+    }
+    const courses = data.record.courses || [];
 
     // Clear the list before adding new items
     courseList.innerHTML = '';
