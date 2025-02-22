@@ -1,7 +1,7 @@
 const binUrl = "https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97"; // JSONBin URL
 const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
 
-// Fetch the courses data from JSONBin and display it
+// Fetch the courses data from JSONBin and display it on teacher's page
 fetch(binUrl, {
   method: 'GET',
   headers: {
@@ -17,7 +17,7 @@ fetch(binUrl, {
   console.error('Error fetching data:', error);
 });
 
-// Function to display courses
+// Function to display courses in the teacher's schedule
 function displayCourses(data) {
   const courseList = document.getElementById('course-list');
   const courses = data.record.courses;
@@ -31,7 +31,7 @@ function displayCourses(data) {
       const courseDiv = document.createElement('div');
       courseDiv.classList.add('course-item');
       
-      // Create the course content
+      // Create the course content (HTML for each course)
       const courseContent = `
         <h3>${course.courseName}</h3>
         <p><strong>Teacher:</strong> ${course.teacher}</p>
@@ -48,7 +48,7 @@ function displayCourses(data) {
   }
 }
 
-// Function to handle course deletion
+// Function to handle course deletion (called when the 'Delete Course' button is clicked)
 function deleteCourse(courseId) {
   if (confirm('Are you sure you want to delete this course?')) {
     // Fetch the current courses data from JSONBin again
@@ -66,7 +66,7 @@ function deleteCourse(courseId) {
       // Find the course to delete and remove it from the array
       const updatedCourses = courses.filter(course => course.courseId !== courseId);
 
-      // Update the courses in the JSONBin
+      // Prepare the updated data object
       const updatedData = {
         ...data.record,
         courses: updatedCourses
@@ -94,3 +94,52 @@ function deleteCourse(courseId) {
     });
   }
 }
+
+// Create a new course when the form is submitted (for the teacher page)
+document.getElementById("create-course-form").addEventListener("submit", function(event) {
+  event.preventDefault();
+  
+  const courseName = document.getElementById("courseName").value;
+  const teacherName = document.getElementById("teacherName").value;
+  const courseDescription = document.getElementById("courseDescription").value;
+  
+  const courseData = {
+    courseId: Date.now(),  // Unique ID (timestamp)
+    courseName,
+    teacher: teacherName,
+    description: courseDescription
+  };
+
+  // Fetch existing courses from JSONBin and update
+  fetch(binUrl, {
+    method: 'GET',
+    headers: {
+      'X-Master-Key': masterKey
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const courses = data.record.courses || [];
+    courses.push(courseData); // Add the new course
+
+    // Update JSONBin with the new course list
+    return fetch(binUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': masterKey
+      },
+      body: JSON.stringify({ courses })
+    });
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert("Course successfully created!");
+    console.log('Course Created:', data);
+    location.reload(); // Reload the page to show the newly added course
+  })
+  .catch(error => {
+    console.error('Error creating course:', error);
+    alert("Error creating course.");
+  });
+});
