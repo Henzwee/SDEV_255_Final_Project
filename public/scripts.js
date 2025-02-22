@@ -156,3 +156,5 @@ document.addEventListener("DOMContentLoaded", function() {
   console.error('Error creating course:', error);
   alert("Error creating course.");
 });
+  });
+});
