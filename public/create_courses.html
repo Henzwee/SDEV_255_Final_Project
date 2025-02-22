@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Builder - Create Courses</title>
+    <title>Schedule Builder - Create/Delete Courses</title>
     <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
@@ -13,24 +13,24 @@
             <li><a href="teacher.html">My Courses</a></li>
             <li><a href="https://henzwee.github.io/SDEV_255_Final_Project/">Log Out</a></li>
         </ul>
-    </nav>    
+    </nav>
 
-    <h1>Create a New Course</h1>
+    <div class="container">
+        <h1>Create New Course</h1>
+        <form id="create-course-form">
+            <label for="courseName">Course Name:</label>
+            <input type="text" id="courseName" required><br><br>
 
-    <form id="create-course-form">
-        <label for="course-name">Course Name:</label>
-        <input type="text" id="course-name" required><br><br>
+            <label for="teacherName">Teacher Name:</label>
+            <input type="text" id="teacherName" required><br><br>
 
-        <label for="teacher-name">Teacher's Name:</label>
-        <input type="text" id="teacher-name" required><br><br>
+            <label for="courseDescription">Course Description:</label>
+            <textarea id="courseDescription" required></textarea><br><br>
 
-        <label for="course-description">Course Description:</label>
-        <textarea id="course-description" required></textarea><br><br>
+            <button type="submit">Create Course</button>
+        </form>
+    </div>
 
-        <button type="submit">Add Course</button>
-    </form>
-
-    <script src="styles.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
-
