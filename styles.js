@@ -1,34 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Fetch the courses from JSONBin when the page loads
-    fetchCourses();
+    // Fetch the available courses when the page loads
+    fetchAvailableCourses();
 
-    // Add course function
-    const createCourseForm = document.getElementById('create-course-form');
-    createCourseForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        const courseName = document.getElementById('course-name').value;
-        const teacherName = document.getElementById('teacher-name').value;
-        const courseDescription = document.getElementById('course-description').value;
-
-        if (!courseName || !teacherName || !courseDescription) {
-            alert("All fields are required!");
-            return;
-        }
-
-        const newCourse = {
-            courseId: generateCourseId(),
-            courseName: courseName,
-            teacher: teacherName,
-            description: courseDescription
-        };
-
-        // Push the new course to the JSONBin
-        addCourse(newCourse);
-    });
-
-    // Fetch and display courses
-    function fetchCourses() {
+    // Fetch available courses
+    function fetchAvailableCourses() {
         fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
             method: 'GET',
             headers: {
@@ -38,18 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            displayCourses(data.record.courses); // Pass courses to be displayed
+            displayAvailableCourses(data.record.courses); // Pass available courses to display
         })
-        .catch(error => console.error('Error fetching courses:', error));
+        .catch(error => console.error('Error fetching available courses:', error));
     }
 
-    // Display courses on the page (for teacher's viewing)
-    function displayCourses(courses) {
-        const courseContainer = document.createElement('div');
-        courseContainer.id = 'course-container';
+    // Display available courses on the page
+    function displayAvailableCourses(courses) {
+        const courseListContainer = document.getElementById('available-course-list');
+        courseListContainer.innerHTML = ''; // Clear any existing content
 
         if (courses.length === 0) {
-            courseContainer.innerHTML = "<p>No courses available.</p>";
+            courseListContainer.innerHTML = "<p>No courses are available to add.</p>";
         } else {
             courses.forEach(course => {
                 const courseDiv = document.createElement('div');
@@ -57,17 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 courseDiv.innerHTML = `
                     <p><strong>${course.courseName}</strong> (${course.teacher})</p>
                     <p>${course.description}</p>
-                    <button onclick="deleteCourse('${course.courseId}')">Delete</button>
+                    <button onclick="addCourse('${course.courseId}')">Add</button>
                 `;
-                courseContainer.appendChild(courseDiv);
+                courseListContainer.appendChild(courseDiv);
             });
         }
-
-        document.body.appendChild(courseContainer); // Add to body
     }
 
-    // Add a new course to JSONBin
-    function addCourse(course) {
+    // Add course to student schedule
+    window.addCourse = function(courseId) {
         fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
             method: 'GET',
             headers: {
@@ -77,31 +50,24 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            data.record.courses.push(course); // Add new course
-            updateCoursesData(data.record); // Send updated data to JSONBin
+            const studentRecord = data.record;
+
+            // Check if the course is already added to the schedule
+            if (!studentRecord.courses.some(course => course.courseId === courseId)) {
+                const courseToAdd = studentRecord.availableCourses.find(course => course.courseId === courseId);
+                if (courseToAdd) {
+                    studentRecord.courses.push(courseToAdd); // Add the course to the student's schedule
+                    updateStudentCoursesData(studentRecord); // Send updated data to JSONBin
+                }
+            } else {
+                alert("You are already registered for this course.");
+            }
         })
         .catch(error => console.error('Error adding course:', error));
-    }
+    };
 
-    // Delete a course
-    window.deleteCourse = function(courseId) {
-        fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer $2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            data.record.courses = data.record.courses.filter(course => course.courseId !== courseId);
-            updateCoursesData(data.record); // Send updated data to JSONBin
-        })
-        .catch(error => console.error('Error deleting course:', error));
-    }
-
-    // Update courses data in JSONBin
-    function updateCoursesData(record) {
+    // Update student courses data in JSONBin
+    function updateStudentCoursesData(record) {
         fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
             method: 'PUT',
             headers: {
@@ -112,14 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(updatedData => {
-            console.log('Courses updated:', updatedData);
+            console.log('Student courses updated:', updatedData);
+            // Optionally, display confirmation or redirect to student page
+            alert("Course added successfully!");
         })
-        .catch(error => console.error('Error updating courses:', error));
-    }
-
-    // Generate a unique course ID (you can improve this logic as needed)
-    function generateCourseId() {
-        return 'course-' + Math.random().toString(36).substr(2, 9);
+        .catch(error => console.error('Error updating student courses:', error));
     }
 });
-
