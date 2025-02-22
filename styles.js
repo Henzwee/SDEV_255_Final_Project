@@ -1,122 +1,96 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const courseListContainer = document.getElementById('course-list');
+const binUrl = "https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97"; // JSONBin URL
+const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
 
-    // Fetch courses when the page loads
-    fetchCourses();
-
-    // Handle form submission to create a new course
-    const createCourseForm = document.getElementById('create-course-form');
-    createCourseForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const courseName = document.getElementById('courseName').value;
-        const teacherName = document.getElementById('teacherName').value;
-        const courseDescription = document.getElementById('courseDescription').value;
-
-        const newCourse = {
-            courseId: Date.now().toString(), // Unique ID based on timestamp
-            courseName: courseName,
-            teacher: teacherName,
-            description: courseDescription
-        };
-
-        addCourseToJSONBin(newCourse);
-    });
-
-    // Fetch courses from JSONBin
-    function fetchCourses() {
-        fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer $2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const courses = data.record.courses || [];
-            displayCourses(courses);
-        })
-        .catch(error => console.error('Error fetching courses:', error));
-    }
-
-    // Display courses on the page
-    function displayCourses(courses) {
-        courseListContainer.innerHTML = ''; // Clear existing courses
-        if (courses.length === 0) {
-            courseListContainer.innerHTML = "<p>No courses available.</p>";
-        } else {
-            courses.forEach(course => {
-                const courseDiv = document.createElement('div');
-                courseDiv.className = 'course';
-                courseDiv.innerHTML = `
-                    <p><strong>${course.courseName}</strong> by ${course.teacher}</p>
-                    <p>${course.description}</p>
-                    <button onclick="deleteCourse('${course.courseId}')">Delete</button>
-                `;
-                courseListContainer.appendChild(courseDiv);
-            });
-        }
-    }
-
-    // Add a new course to the JSONBin
-    function addCourseToJSONBin(course) {
-        fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer $2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const teacherRecord = data.record;
-
-            // Add the new course to the list of courses
-            teacherRecord.courses.push(course);
-
-            // Send updated data back to JSONBin
-            updateCoursesInJSONBin(teacherRecord);
-        })
-        .catch(error => console.error('Error adding course:', error));
-    }
-
-    // Update the courses in JSONBin after adding
-    function updateCoursesInJSONBin(updatedRecord) {
-        fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer $2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ record: updatedRecord })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Courses updated successfully:', data);
-            fetchCourses(); // Refresh the list of courses
-        })
-        .catch(error => console.error('Error updating courses:', error));
-    }
-
-    // Delete a course (confirmation alert)
-    window.deleteCourse = function(courseId) {
-        if (confirm('Are you sure you want to delete this course?')) {
-            fetch('https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer $2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const teacherRecord = data.record;
-                const courses = teacherRecord.courses.filter(course => course.courseId !== courseId);
-                teacherRecord.courses = courses;
-                updateCoursesInJSONBin(teacherRecord); // Update the course list
-            })
-            .catch(error => console.error('Error deleting course:', error));
-        }
-    };
+// Fetch the courses data from JSONBin and display it
+fetch(binUrl, {
+  method: 'GET',
+  headers: {
+    'X-Master-Key': masterKey,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  displayCourses(data);
+})
+.catch(error => {
+  console.error('Error fetching data:', error);
 });
+
+// Function to display courses
+function displayCourses(data) {
+  const courseList = document.getElementById('course-list');
+  const courses = data.record.courses;
+
+  // Clear the list before adding new items
+  courseList.innerHTML = '';
+
+  if (courses.length > 0) {
+    courses.forEach(course => {
+      // Create a div for each course
+      const courseDiv = document.createElement('div');
+      courseDiv.classList.add('course-item');
+      
+      // Create the course content
+      const courseContent = `
+        <h3>${course.courseName}</h3>
+        <p><strong>Teacher:</strong> ${course.teacher}</p>
+        <p><strong>Description:</strong> ${course.description}</p>
+        <button onclick="deleteCourse('${course.courseId}')">Delete Course</button>
+      `;
+      
+      // Add the content to the div
+      courseDiv.innerHTML = courseContent;
+      courseList.appendChild(courseDiv);
+    });
+  } else {
+    courseList.innerHTML = '<p>No courses available.</p>';
+  }
+}
+
+// Function to handle course deletion
+function deleteCourse(courseId) {
+  if (confirm('Are you sure you want to delete this course?')) {
+    // Fetch the current courses data from JSONBin again
+    fetch(binUrl, {
+      method: 'GET',
+      headers: {
+        'X-Master-Key': masterKey,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const courses = data.record.courses;
+
+      // Find the course to delete and remove it from the array
+      const updatedCourses = courses.filter(course => course.courseId !== courseId);
+
+      // Update the courses in the JSONBin
+      const updatedData = {
+        ...data.record,
+        courses: updatedCourses
+      };
+
+      // Send the updated data back to JSONBin
+      fetch(binUrl, {
+        method: 'PUT',
+        headers: {
+          'X-Master-Key': masterKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+      })
+      .then(() => {
+        alert('Course deleted successfully.');
+        location.reload(); // Reload the page to reflect the changes
+      })
+      .catch(error => {
+        console.error('Error deleting course:', error);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching courses:', error);
+    });
+  }
+}
