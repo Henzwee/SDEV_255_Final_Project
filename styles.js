@@ -1,7 +1,7 @@
 const binUrl = "https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97"; // JSONBin URL
 const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
 
-// Fetch the courses data from JSONBin and display it on teacher's page
+// Fetch the courses data from JSONBin and display it on the teacher's page
 fetch(binUrl, {
   method: 'GET',
   headers: {
@@ -11,7 +11,8 @@ fetch(binUrl, {
 })
 .then(response => response.json())
 .then(data => {
-  displayCourses(data);
+  console.log("Fetched courses:", data);  // Log the fetched data
+  displayCourses(data);  // Call the function to display courses
 })
 .catch(error => {
   console.error('Error fetching data:', error);
@@ -110,6 +111,8 @@ document.getElementById("create-course-form").addEventListener("submit", functio
     description: courseDescription
   };
 
+  console.log('Creating Course:', courseData);  // Log the course data
+
   // Fetch existing courses from JSONBin and update
   fetch(binUrl, {
     method: 'GET',
@@ -134,8 +137,8 @@ document.getElementById("create-course-form").addEventListener("submit", functio
   })
   .then(response => response.json())
   .then(data => {
-    alert("Course successfully created!");
     console.log('Course Created:', data);
+    alert("Course successfully created!");
     location.reload(); // Reload the page to show the newly added course
   })
   .catch(error => {
