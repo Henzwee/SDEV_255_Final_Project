@@ -13,7 +13,12 @@ document.addEventListener("DOMContentLoaded", function() {
   .then(response => response.json())
   .then(data => {
     console.log("Fetched courses:", data);  // Log the fetched data
-    displayCourses(data);  // Call the function to display courses
+
+    if (data.record && Array.isArray(data.record.courses)) {
+      displayCourses(data);  // Call the function to display courses
+    } else {
+      console.error('No courses data available.');
+    }
   })
   .catch(error => {
     console.error('Error fetching data:', error);
