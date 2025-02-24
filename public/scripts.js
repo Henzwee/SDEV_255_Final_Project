@@ -17,32 +17,29 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log("Fetched courses for teacher:", data);
       if (data.record && Array.isArray(data.record.courses)) {
-        displayCourses(data);
+        displayCourses(data.record.courses);
       } else {
         console.error('No courses data available.');
       }
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching courses:', error);
     });
 
     // Function to display courses on the teacher page
-    function displayCourses(data) {
-      const courses = data.record.courses || [];
+    function displayCourses(courses) {
       courseListElement.innerHTML = '';
       if (courses.length > 0) {
         courses.forEach(course => {
           const courseDiv = document.createElement('div');
           courseDiv.classList.add('course-item');
-          const courseContent = `
+          courseDiv.innerHTML = `
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
             <p><strong>Description:</strong> ${course.description}</p>
             <button onclick="deleteCourse('${course.courseId}')">Delete Course</button>
           `;
-          courseDiv.innerHTML = courseContent;
           courseListElement.appendChild(courseDiv);
         });
       } else {
@@ -50,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
-    // Global deletion function for teacher page (used by inline onclick)
+    // Global deletion function for teacher page (accessible via inline onclick)
     window.deleteCourse = function(courseId) {
       if (confirm('Are you sure you want to delete this course?')) {
         fetch(binUrl, {
@@ -64,10 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
           const courses = data.record.courses;
           const updatedCourses = courses.filter(course => course.courseId !== courseId);
-          const updatedData = {
-            ...data.record,
-            courses: updatedCourses
-          };
+          const updatedData = { ...data.record, courses: updatedCourses };
           return fetch(binUrl, {
             method: 'PUT',
             headers: {
@@ -93,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
       createCourseForm.addEventListener("submit", function(event) {
         event.preventDefault();
         const courseName = document.getElementById("courseName").value;
+        // Removed any username/account logic – teacher name is now just plain text.
         const teacherName = document.getElementById("teacherName").value;
         const courseDescription = document.getElementById("courseDescription").value;
         
@@ -103,7 +98,6 @@ document.addEventListener("DOMContentLoaded", function() {
           description: courseDescription
         };
 
-        console.log('Creating Course:', courseData);
         fetch(binUrl, {
           method: 'GET',
           headers: {
@@ -125,8 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
-          alert("Course successfully created!");
-          console.log('Course Created:', data);
+          alert("Course created successfully!");
           location.reload();
         })
         .catch(error => {
@@ -138,11 +131,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // -------------------------
-  // Student Page - Available Courses (Registration)
+  // Student Page: Available Courses for Registration
   // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
-    // Fetch and display courses for registration
     fetch(binUrl, {
       method: 'GET',
       headers: {
@@ -152,7 +144,6 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log("Fetched courses for students:", data);
       if (data.record && Array.isArray(data.record.courses)) {
         displayAvailableCourses(data.record.courses);
       } else {
@@ -160,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching courses:', error);
     });
 
     // Function to display available courses with a "Register" button
@@ -195,13 +186,13 @@ document.addEventListener("DOMContentLoaded", function() {
       if (registeredCoursesJSON) {
         try {
           registeredCourses = JSON.parse(registeredCoursesJSON);
-        } catch(e) {
+        } catch (e) {
           console.error("Error parsing registered courses from localStorage", e);
         }
       }
       // Prevent duplicate registrations
       if (registeredCourses.find(c => c.courseId === course.courseId)) {
-        alert("You have already registered for this course.");
+        alert("You are already registered for this course.");
         return;
       }
       registeredCourses.push(course);
@@ -211,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // -------------------------
-  // Student Page - Registered Courses
+  // Student Page: Display Registered Courses
   // -------------------------
   const studentCourseListElement = document.getElementById('student-course-list');
   if (studentCourseListElement) {
@@ -222,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (registeredCoursesJSON) {
         try {
           registeredCourses = JSON.parse(registeredCoursesJSON);
-        } catch(e) {
+        } catch (e) {
           console.error("Error parsing registered courses from localStorage", e);
         }
       }
