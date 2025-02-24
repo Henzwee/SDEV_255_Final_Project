@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function() {
       createCourseForm.addEventListener("submit", function(event) {
         event.preventDefault();
         const courseName = document.getElementById("courseName").value;
-        // Removed any username/account logic – teacher name is now just plain text.
         const teacherName = document.getElementById("teacherName").value;
         const courseDescription = document.getElementById("courseDescription").value;
         
@@ -202,11 +201,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // -------------------------
-  // Student Page: Display Registered Courses
+  // Student Page: Display Registered Courses (with Remove functionality)
   // -------------------------
   const studentCourseListElement = document.getElementById('student-course-list');
   if (studentCourseListElement) {
     displayRegisteredCourses();
+
     function displayRegisteredCourses() {
       let registeredCourses = [];
       const registeredCoursesJSON = localStorage.getItem("registeredCourses");
@@ -227,11 +227,34 @@ document.addEventListener("DOMContentLoaded", function() {
             <p><strong>Teacher:</strong> ${course.teacher}</p>
             <p><strong>Description:</strong> ${course.description}</p>
           `;
+          const removeButton = document.createElement('button');
+          removeButton.textContent = 'Remove';
+          removeButton.addEventListener('click', function() {
+            removeRegisteredCourse(course.courseId);
+          });
+          courseDiv.appendChild(removeButton);
           studentCourseListElement.appendChild(courseDiv);
         });
       } else {
         studentCourseListElement.innerHTML = '<p>You have not registered for any courses.</p>';
       }
+    }
+
+    // Function to remove a registered course from localStorage and update the display
+    function removeRegisteredCourse(courseId) {
+      let registeredCourses = [];
+      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
+      if (registeredCoursesJSON) {
+        try {
+          registeredCourses = JSON.parse(registeredCoursesJSON);
+        } catch(e) {
+          console.error("Error parsing registered courses from localStorage", e);
+        }
+      }
+      const updatedCourses = registeredCourses.filter(course => course.courseId !== courseId);
+      localStorage.setItem("registeredCourses", JSON.stringify(updatedCourses));
+      displayRegisteredCourses();
+      alert("Course removed from your schedule.");
     }
   }
 });
