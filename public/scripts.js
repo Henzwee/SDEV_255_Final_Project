@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
       console.error('Error fetching data:', error);
     });
 
-    // Function to display courses in the teacher's page
+    // Function to display courses on the teacher page
     function displayCourses(data) {
       const courses = data.record.courses || [];
       courseListElement.innerHTML = '';
@@ -50,10 +50,9 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
-    // Expose deleteCourse globally so inline onclick can access it
+    // Global deletion function for teacher page (used by inline onclick)
     window.deleteCourse = function(courseId) {
       if (confirm('Are you sure you want to delete this course?')) {
-        // Fetch current courses data
         fetch(binUrl, {
           method: 'GET',
           headers: {
@@ -69,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
             ...data.record,
             courses: updatedCourses
           };
-          // Update JSONBin with the new courses list
           return fetch(binUrl, {
             method: 'PUT',
             headers: {
@@ -89,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     };
 
-    // If the course creation form exists, attach the submit event handler
+    // Course creation form handling on teacher page
     const createCourseForm = document.getElementById("create-course-form");
     if (createCourseForm) {
       createCourseForm.addEventListener("submit", function(event) {
@@ -106,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         console.log('Creating Course:', courseData);
-        // Get current courses
         fetch(binUrl, {
           method: 'GET',
           headers: {
@@ -117,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
           const courses = data.record.courses || [];
           courses.push(courseData);
-          // Update JSONBin with the new course list
           return fetch(binUrl, {
             method: 'PUT',
             headers: {
@@ -142,11 +138,11 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // -------------------------
-  // Student Page Functionality
+  // Student Page - Available Courses (Registration)
   // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
-    // Fetch and display courses for the student page
+    // Fetch and display courses for registration
     fetch(binUrl, {
       method: 'GET',
       headers: {
@@ -167,20 +163,24 @@ document.addEventListener("DOMContentLoaded", function() {
       console.error('Error fetching data:', error);
     });
 
-    // Function to display courses for the student page
+    // Function to display available courses with a "Register" button
     function displayAvailableCourses(courses) {
       availableCourseList.innerHTML = '';
       if (courses.length > 0) {
         courses.forEach(course => {
           const courseDiv = document.createElement('div');
           courseDiv.classList.add('course-item');
-          const courseContent = `
+          courseDiv.innerHTML = `
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
             <p><strong>Description:</strong> ${course.description}</p>
-            <button onclick="registerCourse('${course.courseId}')">Register</button>
           `;
-          courseDiv.innerHTML = courseContent;
+          const registerButton = document.createElement('button');
+          registerButton.textContent = 'Register';
+          registerButton.addEventListener('click', function() {
+            registerCourse(course);
+          });
+          courseDiv.appendChild(registerButton);
           availableCourseList.appendChild(courseDiv);
         });
       } else {
@@ -188,10 +188,59 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
-    // Expose registerCourse globally so inline onclick can access it
-    window.registerCourse = function(courseId) {
-      alert(`You have registered for course ID: ${courseId}`);
-      // Implement further registration functionality as needed
-    };
+    // Function to register a course by saving it to localStorage
+    function registerCourse(course) {
+      let registeredCourses = [];
+      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
+      if (registeredCoursesJSON) {
+        try {
+          registeredCourses = JSON.parse(registeredCoursesJSON);
+        } catch(e) {
+          console.error("Error parsing registered courses from localStorage", e);
+        }
+      }
+      // Prevent duplicate registrations
+      if (registeredCourses.find(c => c.courseId === course.courseId)) {
+        alert("You have already registered for this course.");
+        return;
+      }
+      registeredCourses.push(course);
+      localStorage.setItem("registeredCourses", JSON.stringify(registeredCourses));
+      alert("Course registered successfully!");
+    }
+  }
+
+  // -------------------------
+  // Student Page - Registered Courses
+  // -------------------------
+  const studentCourseListElement = document.getElementById('student-course-list');
+  if (studentCourseListElement) {
+    displayRegisteredCourses();
+    function displayRegisteredCourses() {
+      let registeredCourses = [];
+      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
+      if (registeredCoursesJSON) {
+        try {
+          registeredCourses = JSON.parse(registeredCoursesJSON);
+        } catch(e) {
+          console.error("Error parsing registered courses from localStorage", e);
+        }
+      }
+      studentCourseListElement.innerHTML = '';
+      if (registeredCourses.length > 0) {
+        registeredCourses.forEach(course => {
+          const courseDiv = document.createElement('div');
+          courseDiv.classList.add('course-item');
+          courseDiv.innerHTML = `
+            <h3>${course.courseName}</h3>
+            <p><strong>Teacher:</strong> ${course.teacher}</p>
+            <p><strong>Description:</strong> ${course.description}</p>
+          `;
+          studentCourseListElement.appendChild(courseDiv);
+        });
+      } else {
+        studentCourseListElement.innerHTML = '<p>You have not registered for any courses.</p>';
+      }
+    }
   }
 });
