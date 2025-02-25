@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const binUrl = "https://api.jsonbin.io/v3/b/67ba173eacd3cb34a8ec8c97"; // JSONBin URL
-  const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
+  const apiUrl = "http://localhost:3000/api/courses"; // JSONBin URL,,, updated to url
+  //const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
 
   // -------------------------
   // Teacher Page Functionality
@@ -8,20 +8,16 @@ document.addEventListener("DOMContentLoaded", function() {
   const courseListElement = document.getElementById('course-list');
   if (courseListElement) {
     // Fetch and display courses for the teacher page
-    fetch(binUrl, {
+    fetch(apiUrl, {
       method: 'GET',
       headers: {
-        'X-Master-Key': masterKey,
+        //'X-Master-Key': masterKey,
         'Content-Type': 'application/json'
       }
     })
     .then(response => response.json())
-    .then(data => {
-      if (data.record && Array.isArray(data.record.courses)) {
-        displayCourses(data.record.courses);
-      } else {
-        console.error('No courses data available.');
-      }
+    .then(courses => {
+      displayCourses(courses);
     })
     .catch(error => {
       console.error('Error fetching courses:', error);
@@ -50,26 +46,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // Global deletion function for teacher page (accessible via inline onclick)
     window.deleteCourse = function(courseId) {
       if (confirm('Are you sure you want to delete this course?')) {
-        fetch(binUrl, {
-          method: 'GET',
+        fetch(`${apiUrl}/${id}`, {
+          method: 'DELETE',
           headers: {
-            'X-Master-Key': masterKey,
+            //'X-Master-Key': masterKey,
             'Content-Type': 'application/json'
           }
-        })
-        .then(response => response.json())
-        .then(data => {
-          const courses = data.record.courses;
-          const updatedCourses = courses.filter(course => course.courseId !== courseId);
-          const updatedData = { ...data.record, courses: updatedCourses };
-          return fetch(binUrl, {
-            method: 'PUT',
-            headers: {
-              'X-Master-Key': masterKey,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedData)
-          });
         })
         .then(() => {
           alert('Course deleted successfully.');
@@ -90,31 +72,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const teacherName = document.getElementById("teacherName").value;
         const courseDescription = document.getElementById("courseDescription").value;
         
-        const courseData = {
-          courseId: Date.now(),  // Unique ID based on timestamp
-          courseName,
-          teacher: teacherName,
-          description: courseDescription
-        };
+        const courseData = { courseName, teacher: teacherName, description: courseDescription };
 
-        fetch(binUrl, {
-          method: 'GET',
+        fetch(apiUrl, {
+          method: 'POST',
           headers: {
-            'X-Master-Key': masterKey
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          const courses = data.record.courses || [];
-          courses.push(courseData);
-          return fetch(binUrl, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Master-Key': masterKey
-            },
-            body: JSON.stringify({ courses })
-          });
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(courseData)
         })
         .then(response => response.json())
         .then(data => {
@@ -134,25 +99,21 @@ document.addEventListener("DOMContentLoaded", function() {
   // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
-    fetch(binUrl, {
+    fetch(apiUrl, {
       method: 'GET',
       headers: {
-        'X-Master-Key': masterKey,
+        //'X-Master-Key': masterKey,
         'Content-Type': 'application/json'
       }
     })
     .then(response => response.json())
-    .then(data => {
-      if (data.record && Array.isArray(data.record.courses)) {
-        displayAvailableCourses(data.record.courses);
-      } else {
-        console.error('No courses available.');
-      }
+    .then(courses => {
+      displayAvailableCourses(courses);
     })
     .catch(error => {
       console.error('Error fetching courses:', error);
     });
-
+    
     // Function to display available courses with a "Register" button
     function displayAvailableCourses(courses) {
       availableCourseList.innerHTML = '';

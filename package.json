@@ -1,9 +1,10 @@
 {
   "name": "group2final",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,12 @@
   "dependencies": {
     "body-parser": "^1.20.3",
     "ejs": "^3.1.10",
-    "express": "^4.21.2"
-  }
+    "express": "^4.18.2",
+       "mongoose": "^7.5.0",
+       "nodemon": "^3.1.0"
+     },
+    "engines": {
+       "node": "16.x"
+    }
 }
+

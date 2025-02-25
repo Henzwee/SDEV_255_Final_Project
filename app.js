@@ -2,6 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const mongoose = require("Database/db.js");
+const courseRoutes = require("Database/courseRoutes")
+
+app.use('/api', courseRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
