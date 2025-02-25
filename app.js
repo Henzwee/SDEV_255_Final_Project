@@ -2,18 +2,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-const mongoose = require("Database/db.js");
-const courseRoutes = require("Database/courseRoutes")
+const mongoose = require("/Database/db.js");
+const courseRoutes = require("/Database/courseRoutes")
 
 app.use('/api', courseRoutes);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const cors = require('cors');
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
 
 // Serve index.html for the root route
 app.get('/', (req, res) => {
