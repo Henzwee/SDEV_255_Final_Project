@@ -2,15 +2,15 @@
 <html>
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="public/styles.css"> 
+    <link rel="stylesheet" href="styles.css"> 
     <script>
         function handleLogin(event) {
             event.preventDefault(); 
             var role = document.getElementById("role").value;
             if (role === "student") {
-                window.location.href = "public/student.html"; 
+                window.location.href = "student.html"; 
             } else if (role === "teacher") {
-                window.location.href = "public/teacher.html"; 
+                window.location.href = "teacher.html"; 
             } else {
                 alert('Invalid role'); 
             }

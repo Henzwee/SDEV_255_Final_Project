@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const apiUrl = "http://localhost:3000/api/courses"; // JSONBin URL,,, updated to url
+  const apiUrl = "https://obsidian-sumptuous-peripheral.glitch.me/"; // JSONBin URL,,, updated to url
   //const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
 
   // -------------------------
