@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-const mongoose = require("/Database/db.js");
-const courseRoutes = require("/Database/courseRoutes")
+const mongoose = require("./Database/db.js");
+const courseRoutes = require("./Database/courseRoutes")
 
 app.use('/api', courseRoutes);
 const cors = require('cors');
