@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
 const mongoose = require("./Database/db.js");
-const courseRoutes = require("./Database/courseRoutes")
+const courseRoutes = require("./Database/courseRoutes");
 
 app.use('/api', courseRoutes);
 const cors = require('cors');
@@ -17,8 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-
-
 // Serve index.html for the root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -26,13 +24,19 @@ app.get('/', (req, res) => {
 
 // Routes for handling form submissions and redirecting to static pages
 app.post('/login', (req, res) => {
-    const role = req.body.role;
-    if (role === 'student') {
-        res.redirect('/public/student.html');
-    } else if (role === 'teacher') {
-        res.redirect('/public/teacher.html');
+    const { role, password } = req.body;
+
+    // Hardcoded password check
+    if (password === 'Password1234') {
+        if (role === 'student') {
+            res.redirect('/public/student.html');
+        } else if (role === 'teacher') {
+            res.redirect('/public/teacher.html');
+        } else {
+            res.send('Invalid role');
+        }
     } else {
-        res.send('Invalid role');
+        res.send('Invalid password');
     }
 });
 

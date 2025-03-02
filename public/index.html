@@ -4,16 +4,42 @@
     <title>Login</title>
     <link rel="stylesheet" href="styles.css"> 
     <script>
+        // Submit form data to backend using fetch API for password validation
         function handleLogin(event) {
             event.preventDefault(); 
+            
+            // Get form values
+            var username = document.getElementById("username").value;
             var role = document.getElementById("role").value;
-            if (role === "student") {
-                window.location.href = "student.html"; 
-            } else if (role === "teacher") {
-                window.location.href = "teacher.html"; 
-            } else {
-                alert('Invalid role'); 
-            }
+            var password = document.getElementById("password").value;
+
+            // Create an object to send via POST
+            var loginData = {
+                username: username,
+                role: role,
+                password: password
+            };
+
+            // Send POST request to backend
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data === 'Invalid role' || data === 'Invalid password') {
+                    alert(data);  // Display message if there's an error
+                } else {
+                    window.location.href = data;  // Redirect to respective page
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong!');
+            });
         }
     </script>
 </head>
@@ -23,6 +49,9 @@
         <form onsubmit="handleLogin(event)">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
 
             <label for="role">Role:</label>
             <select id="role" name="role">
