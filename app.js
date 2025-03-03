@@ -12,14 +12,14 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname, ));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Serve index.html for the root route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname,'index.html'));
 });
 
 // Routes for handling form submissions and redirecting to static pages
@@ -29,9 +29,9 @@ app.post('/login', (req, res) => {
     // Hardcoded password check
     if (password === 'Password1234') {
         if (role === 'student') {
-            res.redirect('/public/student.html');
+            res.redirect('/student.html');
         } else if (role === 'teacher') {
-            res.redirect('/public/teacher.html');
+            res.redirect('/teacher.html');
         } else {
             res.send('Invalid role');
         }
@@ -42,15 +42,15 @@ app.post('/login', (req, res) => {
 
 // Serve other static HTML files
 app.get('/add_courses.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'add_courses.html'));
+    res.sendFile(path.join(__dirname, 'add_courses.html'));
 });
 
 app.get('/create_courses.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'create_courses.html'));
+    res.sendFile(path.join(__dirname, 'create_courses.html'));
 });
 
 app.get('/schedule.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'schedule.html'));
+    res.sendFile(path.join(__dirname, 'schedule.html'));
 });
 
 //app.listen(3000, () => {
