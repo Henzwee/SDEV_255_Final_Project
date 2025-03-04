@@ -16,6 +16,8 @@ body {
     text-align: center;
     width: 300px;
     border: 2px solid #ccc; /* Ensures visible box */
+    margin: 70px auto; /* 20px from the top, centered horizontally */
+    position: relative; /* Keeps it in place */
 }
 
 /* Center the login title */
