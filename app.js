@@ -27,18 +27,17 @@ app.post('/login', (req, res) => {
     const { role, password } = req.body;
 
     // Hardcoded password check
-    if (password === 'Password1234') {
-        if (role === 'student') {
-            res.redirect('/docs/student.html');
-        } else if (role === 'teacher') {
-            res.redirect('/docs/teacher.html');
-        } else {
-            res.send('Invalid role');
-        }
+if (password === 'Password1234') {
+    if (role === 'student') {
+        res.redirect('student.html'); 
+    } else if (role === 'teacher') {
+        res.redirect('teacher.html');
     } else {
-        res.send('Invalid password');
+        res.send('Invalid role');
     }
-});
+} else {
+    res.send('Invalid password');
+}
 
 // Serve other static HTML files
 app.get('/add_courses.html', (req, res) => {
