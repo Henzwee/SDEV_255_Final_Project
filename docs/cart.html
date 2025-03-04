@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Builder - Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="add_courses.html">Add Courses</a></li>
+            <li><a href="student.html">My Courses</a></li>
+            <li><a href="https://obsidian-sumptuous-peripheral.glitch.me/">Log Out</a></li>
+            <li class="cart-icon">
+                <a href="cart.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Your Course Cart</h1>
+        <p>Review and finalize your selected courses.</p>
+
+        <!-- List of courses added to the cart -->
+        <div id="cart-course-list"></div>
+
+        <button id="finalize-schedule">Finalize Schedule</button>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
