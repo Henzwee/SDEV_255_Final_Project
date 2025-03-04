@@ -29,9 +29,9 @@ app.post('/login', (req, res) => {
     // Hardcoded password check
 if (password === 'Password1234') {
     if (role === 'student') {
-        res.redirect('student.html'); 
+        res.redirect('/student.html'); 
     } else if (role === 'teacher') {
-        res.redirect('teacher.html');
+        res.redirect('/teacher.html');
     } else {
         res.send('Invalid role');
     }
