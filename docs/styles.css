@@ -16,6 +16,12 @@ body {
     text-align: center;
     width: 300px;
     border: 2px solid #ccc; /* Ensures visible box */
+    
+    /* Center the container */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%); /* Moves it up by 50% of its height and lowers it by an additional 20px */
 }
 
 /* Center the login title */
