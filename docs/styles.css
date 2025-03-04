@@ -19,7 +19,7 @@ body {
     
     /* Center the container */
     position: absolute;
-    top: 30%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -40%); /* Moves it up by 50% of its height and lowers it by an additional 20px */
 }
