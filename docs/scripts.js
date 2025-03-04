@@ -1,69 +1,45 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const apiUrl = "https://obsidian-sumptuous-peripheral.glitch.me/api/courses"; // JSONBin URL,,, updated to url
-  //const masterKey = "$2a$10$KpiDLKLCc341TzIpvhpAu.nXgYzTLRPcIoJII.z3cpl9qZsD6kU/W"; // Master key
+  const apiUrl = "https://obsidian-sumptuous-peripheral.glitch.me/api/courses"; // Updated API URL
 
   // -------------------------
   // Teacher Page Functionality
   // -------------------------
   const courseListElement = document.getElementById('course-list');
   if (courseListElement) {
-    // Fetch and display courses for the teacher page
     fetch(apiUrl, {
       method: 'GET',
-      headers: {
-        //'X-Master-Key': masterKey,
-        'Content-Type': 'application/json'
-      }
+      headers: { 'Content-Type': 'application/json' }
     })
     .then(response => response.json())
-    .then(courses => {
-      displayCourses(courses);
-    })
-    .catch(error => {
-      console.error('Error fetching courses:', error);
-    });
+    .then(courses => displayCourses(courses))
+    .catch(error => console.error('Error fetching courses:', error));
 
-    // Function to display courses on the teacher page
     function displayCourses(courses) {
       courseListElement.innerHTML = '';
-      if (courses.length > 0) {
-        courses.forEach(course => {
-          const courseDiv = document.createElement('div');
-          courseDiv.classList.add('course-item');
-          courseDiv.innerHTML = `
-            <h3>${course.courseName}</h3>
-            <p><strong>Teacher:</strong> ${course.teacher}</p>
-            <p><strong>Description:</strong> ${course.description}</p>
-            <button onclick="deleteCourse('${course.courseId}')">Delete Course</button>
-          `;
-          courseListElement.appendChild(courseDiv);
-        });
-      } else {
-        courseListElement.innerHTML = '<p>No courses available.</p>';
-      }
+      courses.forEach(course => {
+        const courseDiv = document.createElement('div');
+        courseDiv.classList.add('course-item');
+        courseDiv.innerHTML = `
+          <h3>${course.courseName}</h3>
+          <p><strong>Teacher:</strong> ${course.teacher}</p>
+          <p><strong>Description:</strong> ${course.description}</p>
+          <button onclick="deleteCourse('${course.courseId}')">Delete Course</button>
+        `;
+        courseListElement.appendChild(courseDiv);
+      });
     }
 
-    // Global deletion function for teacher page (accessible via inline onclick)
     window.deleteCourse = function(courseId) {
       if (confirm('Are you sure you want to delete this course?')) {
-        fetch(`${apiUrl}/${id}`, {
-          method: 'DELETE',
-          headers: {
-            //'X-Master-Key': masterKey,
-            'Content-Type': 'application/json'
-          }
-        })
+        fetch(`${apiUrl}/${courseId}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } })
         .then(() => {
           alert('Course deleted successfully.');
           location.reload();
         })
-        .catch(error => {
-          console.error('Error deleting course:', error);
-        });
+        .catch(error => console.error('Error deleting course:', error));
       }
     };
 
-    // Course creation form handling on teacher page
     const createCourseForm = document.getElementById("create-course-form");
     if (createCourseForm) {
       createCourseForm.addEventListener("submit", function(event) {
@@ -76,13 +52,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         fetch(apiUrl, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(courseData)
         })
         .then(response => response.json())
-        .then(data => {
+        .then(() => {
           alert("Course created successfully!");
           location.reload();
         })
@@ -95,91 +69,108 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // -------------------------
-  // Student Page: Available Courses for Registration
+  // Student Page: Available Courses
   // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
     fetch(apiUrl, {
       method: 'GET',
-      headers: {
-        //'X-Master-Key': masterKey,
-        'Content-Type': 'application/json'
-      }
+      headers: { 'Content-Type': 'application/json' }
     })
     .then(response => response.json())
-    .then(courses => {
-      displayAvailableCourses(courses);
-    })
-    .catch(error => {
-      console.error('Error fetching courses:', error);
-    });
+    .then(courses => displayAvailableCourses(courses))
+    .catch(error => console.error('Error fetching courses:', error));
     
-    // Function to display available courses with a "Register" button
     function displayAvailableCourses(courses) {
       availableCourseList.innerHTML = '';
-      if (courses.length > 0) {
-        courses.forEach(course => {
+      courses.forEach(course => {
+        const courseDiv = document.createElement('div');
+        courseDiv.classList.add('course-item');
+        courseDiv.innerHTML = `
+          <h3>${course.courseName}</h3>
+          <p><strong>Teacher:</strong> ${course.teacher}</p>
+          <p><strong>Description:</strong> ${course.description}</p>
+        `;
+        const addToCartButton = document.createElement('button');
+        addToCartButton.textContent = 'Add to Cart';
+        addToCartButton.addEventListener('click', function() {
+          addToCart(course);
+        });
+        courseDiv.appendChild(addToCartButton);
+        availableCourseList.appendChild(courseDiv);
+      });
+    }
+
+    function addToCart(course) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.find(c => c.courseId === course.courseId)) {
+        alert("This course is already in your cart.");
+        return;
+      }
+      cart.push(course);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("Course added to cart!");
+    }
+  }
+
+  // -------------------------
+  // Cart Page: Display and Remove Courses
+  // -------------------------
+  const cartCourseList = document.getElementById('cart-course-list');
+  if (cartCourseList) {
+    displayCart();
+
+    function displayCart() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cartCourseList.innerHTML = '';
+      if (cart.length === 0) {
+        cartCourseList.innerHTML = '<p>Your cart is empty.</p>';
+      } else {
+        cart.forEach((course, index) => {
           const courseDiv = document.createElement('div');
           courseDiv.classList.add('course-item');
           courseDiv.innerHTML = `
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
             <p><strong>Description:</strong> ${course.description}</p>
+            <button onclick="removeFromCart(${index})">Remove</button>
           `;
-          const registerButton = document.createElement('button');
-          registerButton.textContent = 'Register';
-          registerButton.addEventListener('click', function() {
-            registerCourse(course);
-          });
-          courseDiv.appendChild(registerButton);
-          availableCourseList.appendChild(courseDiv);
+          cartCourseList.appendChild(courseDiv);
         });
-      } else {
-        availableCourseList.innerHTML = '<p>No available courses.</p>';
       }
     }
 
-    // Function to register a course by saving it to localStorage
-    function registerCourse(course) {
-      let registeredCourses = [];
-      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
-      if (registeredCoursesJSON) {
-        try {
-          registeredCourses = JSON.parse(registeredCoursesJSON);
-        } catch (e) {
-          console.error("Error parsing registered courses from localStorage", e);
-        }
-      }
-      // Prevent duplicate registrations
-      if (registeredCourses.find(c => c.courseId === course.courseId)) {
-        alert("You are already registered for this course.");
-        return;
-      }
-      registeredCourses.push(course);
-      localStorage.setItem("registeredCourses", JSON.stringify(registeredCourses));
-      alert("Course registered successfully!");
-    }
+    window.removeFromCart = function(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      displayCart();
+    };
+
+    document.getElementById("finalize-schedule").addEventListener("click", function() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let schedule = JSON.parse(localStorage.getItem("registeredCourses")) || [];
+
+      schedule = schedule.concat(cart);
+      localStorage.setItem("registeredCourses", JSON.stringify(schedule));
+      localStorage.removeItem("cart");
+      window.location.href = "student.html";
+    });
   }
 
   // -------------------------
-  // Student Page: Display Registered Courses (with Remove functionality)
+  // Student Page: Display Registered Courses
   // -------------------------
   const studentCourseListElement = document.getElementById('student-course-list');
   if (studentCourseListElement) {
     displayRegisteredCourses();
 
     function displayRegisteredCourses() {
-      let registeredCourses = [];
-      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
-      if (registeredCoursesJSON) {
-        try {
-          registeredCourses = JSON.parse(registeredCoursesJSON);
-        } catch (e) {
-          console.error("Error parsing registered courses from localStorage", e);
-        }
-      }
+      let registeredCourses = JSON.parse(localStorage.getItem("registeredCourses")) || [];
       studentCourseListElement.innerHTML = '';
-      if (registeredCourses.length > 0) {
+      if (registeredCourses.length === 0) {
+        studentCourseListElement.innerHTML = '<p>You have not registered for any courses.</p>';
+      } else {
         registeredCourses.forEach(course => {
           const courseDiv = document.createElement('div');
           courseDiv.classList.add('course-item');
@@ -187,35 +178,19 @@ document.addEventListener("DOMContentLoaded", function() {
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
             <p><strong>Description:</strong> ${course.description}</p>
+            <button onclick="removeRegisteredCourse('${course.courseId}')">Remove</button>
           `;
-          const removeButton = document.createElement('button');
-          removeButton.textContent = 'Remove';
-          removeButton.addEventListener('click', function() {
-            removeRegisteredCourse(course.courseId);
-          });
-          courseDiv.appendChild(removeButton);
           studentCourseListElement.appendChild(courseDiv);
         });
-      } else {
-        studentCourseListElement.innerHTML = '<p>You have not registered for any courses.</p>';
       }
     }
 
-    // Function to remove a registered course from localStorage and update the display
-    function removeRegisteredCourse(courseId) {
-      let registeredCourses = [];
-      const registeredCoursesJSON = localStorage.getItem("registeredCourses");
-      if (registeredCoursesJSON) {
-        try {
-          registeredCourses = JSON.parse(registeredCoursesJSON);
-        } catch(e) {
-          console.error("Error parsing registered courses from localStorage", e);
-        }
-      }
-      const updatedCourses = registeredCourses.filter(course => course.courseId !== courseId);
-      localStorage.setItem("registeredCourses", JSON.stringify(updatedCourses));
+    window.removeRegisteredCourse = function(courseId) {
+      let registeredCourses = JSON.parse(localStorage.getItem("registeredCourses")) || [];
+      registeredCourses = registeredCourses.filter(course => course.courseId !== courseId);
+      localStorage.setItem("registeredCourses", JSON.stringify(registeredCourses));
       displayRegisteredCourses();
       alert("Course removed from your schedule.");
-    }
+    };
   }
 });
