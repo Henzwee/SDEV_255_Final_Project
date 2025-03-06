@@ -2,41 +2,32 @@
 <html>
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="styles.css">
     <script>
-        // Submit form data to backend using fetch API for password validation
-       function handleLogin(event) {
-    event.preventDefault(); 
-    
-    var username = document.getElementById("username").value;
-    var role = document.getElementById("role").value;
-    var password = document.getElementById("password").value;
-
-    var loginData = { username, role, password };
-
-    fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
-    })
-    .then(response => response.json())  // Expecting JSON response
-    .then(data => {
-        if (data.error) {
-            alert(data.error);  // Show error message
-        } else if (data.redirect) {
-            window.location.href = data.redirect;  // Redirect if successful
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Something went wrong!');
-    });
-}
-
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Something went wrong!');
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var role = document.getElementById("role").value;
+            var errorMsg = document.getElementById("errorMsg");
+            
+            errorMsg.style.display = "none"; // Hide error message before new request
+            
+            var response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, role })
             });
+            
+            var data = await response.json();
+            
+            if (data.success) {
+                window.location.href = data.url; // Redirect based on user role
+            } else {
+                errorMsg.innerText = data.message; // Show error message
+                errorMsg.style.display = "block";
+            }
         }
     </script>
 </head>
@@ -58,6 +49,7 @@
 
             <button type="submit">Login</button>
         </form>
+        <div id="errorMsg" style="display:none; color:red;"></div> <!-- Error message container -->
     </div>
 </body>
 </html>
