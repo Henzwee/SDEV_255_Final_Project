@@ -1,7 +1,7 @@
 // mongo sign in to database info
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://User:password0123@finalproject.0i4uh.mongodb.net/?retryWrites=true&w=majority&appName=FinalProject", {
+mongoose.connect("mongodb+srv://User:password0123@finalproject.0i4uh.mongodb.net/coursedb?retryWrites=true&w=majority&appName=FinalProject", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000
