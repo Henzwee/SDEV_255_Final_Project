@@ -20,15 +20,27 @@
         <form id="create-course-form">
             <label for="courseName">Course Name:</label>
             <input type="text" id="courseName" required><br><br>
-
+        
             <label for="teacherName">Teacher Name:</label>
             <input type="text" id="teacherName" required><br><br>
-
+        
+            <label for="creditHours">Credit Hours:</label>
+            <select id="creditHours" required>
+                <option value="" disabled selected>Select Credit Hours</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select><br><br>
+        
             <label for="courseDescription">Course Description:</label>
             <textarea id="courseDescription" required></textarea><br><br>
-
+        
             <button type="submit">Create Course</button>
         </form>
+        
     </div>
 
     <script src="scripts.js"></script>

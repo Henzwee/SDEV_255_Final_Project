@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         courseDiv.innerHTML = `
           <h3>${course.courseName}</h3>
           <p><strong>Teacher:</strong> ${course.teacher}</p>
+          <p><strong>Credit Hours:</strong> ${course.creditHours}</p>
           <p><strong>Description:</strong> ${course.description}</p>
           <button onclick="deleteCourse('${course.courseId}')">Delete Course</button>
         `;
@@ -46,9 +47,20 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         const courseName = document.getElementById("courseName").value;
         const teacherName = document.getElementById("teacherName").value;
+        const creditHours = document.getElementById("creditHours").value;
         const courseDescription = document.getElementById("courseDescription").value;
-        
-        const courseData = { courseName, teacher: teacherName, description: courseDescription };
+
+        if (!creditHours) {
+          alert("Please select the credit hours for this course.");
+          return;
+        }
+
+        const courseData = {
+          courseName,
+          teacher: teacherName,
+          creditHours,  // Storing Credit Hours
+          description: courseDescription
+        };
 
         fetch(apiUrl, {
           method: 'POST',
@@ -89,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         courseDiv.innerHTML = `
           <h3>${course.courseName}</h3>
           <p><strong>Teacher:</strong> ${course.teacher}</p>
+          <p><strong>Credit Hours:</strong> ${course.creditHours}</p>
           <p><strong>Description:</strong> ${course.description}</p>
         `;
         const addToCartButton = document.createElement('button');
@@ -132,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
           courseDiv.innerHTML = `
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
+            <p><strong>Credit Hours:</strong> ${course.creditHours}</p>
             <p><strong>Description:</strong> ${course.description}</p>
             <button onclick="removeFromCart(${index})">Remove</button>
           `;
@@ -177,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
           courseDiv.innerHTML = `
             <h3>${course.courseName}</h3>
             <p><strong>Teacher:</strong> ${course.teacher}</p>
+            <p><strong>Credit Hours:</strong> ${course.creditHours}</p>
             <p><strong>Description:</strong> ${course.description}</p>
             <button onclick="removeRegisteredCourse('${course.courseId}')">Remove</button>
           `;
