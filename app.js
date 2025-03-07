@@ -34,10 +34,20 @@ app.post('/login', async (req, res) => {
     const { username, password, role } = req.body; // Include role in the request body
     try {
         const user = await User.findOne({ username: username, role: role }); // Query with username and role
-        if (user && user.verifyPassword(password)) {
-            req.session.userId = user._id;
-            req.session.role = user.role;
-            res.json({ success: true, url: `/${user.role.toLowerCase()}.html` });
+        if (user) {
+            user.verifyPassword(password, (err, isMatch) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ success: false, message: 'Server error' });
+                }
+                if (isMatch) {
+                    req.session.userId = user._id;
+                    req.session.role = user.role;
+                    res.json({ success: true, url: `/${user.role.toLowerCase()}.html` });
+                } else {
+                    res.json({ success: false, message: 'Invalid credentials or role' });
+                }
+            });
         } else {
             res.json({ success: false, message: 'Invalid credentials or role' });
         }
