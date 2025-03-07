@@ -1,40 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
-    <script>
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            var role = document.getElementById("role").value;
-            var errorMsg = document.getElementById("errorMsg");
-            
-            errorMsg.style.display = "none"; // Hide error message before new request
-            
-            var response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, role })
-            });
-            
-            var data = await response.json();
-            
-            if (data.success) {
-                window.location.href = data.url; // Redirect based on user role
-            } else {
-                errorMsg.innerText = data.message; // Show error message
-                errorMsg.style.display = "block";
-            }
-        }
-    </script>
 </head>
 <body>
     <div class="login-container">
         <h1>Login</h1>
-        <form onsubmit="handleLogin(event)">
+        <form id="loginForm" onsubmit="handleLogin(event)">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required><br><br>
 
@@ -51,5 +26,44 @@
         </form>
         <div id="errorMsg" style="display:none; color:red;"></div> <!-- Error message container -->
     </div>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var role = document.getElementById("role").value;
+            var errorMsg = document.getElementById("errorMsg");
+
+            errorMsg.style.display = "none"; // Hide error message before new request
+
+            try {
+                var response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, role })
+                });
+
+                if (!response.ok) {
+                    errorMsg.innerText = `Error: ${response.status} ${response.statusText}`;
+                    errorMsg.style.display = "block";
+                    return;
+                }
+
+                var data = await response.json();
+                if (data.success) {
+                    window.location.href = data.url; // Redirect based on user role
+                } else {
+                    errorMsg.innerText = data.message; // Show error message
+                    errorMsg.style.display = "block";
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                errorMsg.innerText = 'Failed to login. Please try again.';
+                errorMsg.style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
