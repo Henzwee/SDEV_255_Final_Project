@@ -1,11 +1,8 @@
 /* General styles */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ensures full viewport height */
     margin: 0;
-    font-family: Arial, sans-serif; /* Restored original font */
+    font-family: Arial, sans-serif;
+    padding-top: 60px; /* Push everything down */
 }
 
 /* Fix login container positioning */
