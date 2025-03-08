@@ -56,12 +56,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const courseData = {
+          courseId: new ObjectId(), // Generate a unique ObjectId for courseId
           courseName,
           teacher: teacherName,
           creditHours: parseInt(creditHours, 10),
           description: courseDescription
         };
-
+        
         console.log("🔵 Sending Course Data:", courseData);
 
         fetch(apiUrl, {

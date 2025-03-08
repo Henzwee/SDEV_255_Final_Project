@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
-// Model for the course form
 const courseSchema = new mongoose.Schema({
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: new mongoose.Types.ObjectId() // Generate a unique ObjectId
+  },
   courseName: {
     type: String,
     required: true
@@ -10,11 +13,11 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  creditHours: {  // <-- Added Credit Hours field
+  creditHours: {  
     type: Number,
     required: true,
-    min: 1, // Ensure at least 1 credit hour
-    max: 6  // Set a reasonable max limit
+    min: 1, 
+    max: 6  
   },
   description: {
     type: String

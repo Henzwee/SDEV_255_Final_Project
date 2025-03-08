@@ -64,6 +64,20 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Course Creation Route
+app.post('/api/courses', async (req, res) => {
+    try {
+        console.log("🔵 Request Payload:", req.body); // Log the request payload
+        const newCourse = new Course(req.body);
+        const savedCourse = await newCourse.save();
+        console.log("🟢 Course saved:", savedCourse); // Log the saved course
+        res.status(201).json(savedCourse);
+    } catch (err) {
+        console.error("🔴 Error saving course:", err);
+        res.status(400).json({ message: err.message });
+    }
+});
+
 // ✅ Serve HTML pages
 app.get('/add_courses.html', (req, res) => res.sendFile(path.join(__dirname, 'docs', 'add_courses.html')));
 app.get('/create_courses.html', (req, res) => res.sendFile(path.join(__dirname, 'docs', 'create_courses.html')));
