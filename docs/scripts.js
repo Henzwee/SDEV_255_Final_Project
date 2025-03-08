@@ -1,7 +1,61 @@
 document.addEventListener("DOMContentLoaded", function() {
   const apiUrl = "https://obsidian-sumptuous-peripheral.glitch.me/api/courses"; // Updated API URL
 
+  const createCourseForm = document.getElementById("create-course-form");
+  if (createCourseForm) {
+    console.log("🔵 Create Course Form Found");
+    createCourseForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      console.log("🔵 Form Submitted");
+
+      const courseName = document.getElementById("courseName").value;
+      const teacherName = document.getElementById("teacherName").value;
+      const creditHours = document.getElementById("creditHours").value;
+      const courseDescription = document.getElementById("courseDescription").value;
+
+      if (!creditHours) {
+        alert("Please select the credit hours for this course.");
+        return;
+      }
+
+      const courseData = {
+        courseName,
+        teacher: teacherName,
+        creditHours: parseInt(creditHours, 10),
+        description: courseDescription
+      };
+
+      console.log("🔵 Sending Course Data:", courseData);
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(courseData)
+      })
+      .then(response => {
+        console.log("🟢 API Response Status:", response.status);
+        return response.json();
+      })
+      .then(data => {
+        console.log("🟢 API Response Data:", data);
+        if (!data._id) {
+          throw new Error("Course was not saved properly.");
+        }
+        alert("Course created successfully!");
+        window.location.href = "teacher.html"; // Redirect to teacher page after creation
+      })
+      .catch(error => {
+        console.error('🔴 Error creating course:', error);
+        alert("Error creating course. Check console for details.");
+      });
+    });
+  } else {
+    console.log("🔴 Create Course Form Not Found on this page");
+  }
+
+  // -------------------------
   // Teacher Page Functionality
+  // -------------------------
   const courseListElement = document.getElementById('course-list');
   if (courseListElement) {
     fetch(apiUrl, {
@@ -38,53 +92,11 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('🔴 Error deleting course:', error));
       }
     };
-
-    const createCourseForm = document.getElementById("create-course-form");
-    if (createCourseForm) {
-      createCourseForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const courseName = document.getElementById("courseName").value;
-        const teacherName = document.getElementById("teacherName").value;
-        const creditHours = document.getElementById("creditHours").value;
-        const courseDescription = document.getElementById("courseDescription").value;
-
-        if (!creditHours) {
-          alert("Please select the credit hours for this course.");
-          return;
-        }
-
-        const courseData = {
-          courseName,
-          teacher: teacherName,
-          creditHours: parseInt(creditHours, 10),
-          description: courseDescription
-        };
-        
-        console.log("🔵 Sending Course Data:", courseData);
-
-        fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(courseData)
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log("🟢 API Response:", data);
-          if (!data._id) {
-            throw new Error("Course was not saved properly.");
-          }
-          alert("Course created successfully!");
-          location.reload();
-        })
-        .catch(error => {
-          console.error('🔴 Error creating course:', error);
-          alert("Error creating course. Check console for details.");
-        });
-      });
-    }
   }
 
+  // -------------------------
   // Student Page: Available Courses
+  // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
     fetch(apiUrl, {
@@ -117,7 +129,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // -------------------------
   // Cart Page: Display and Remove Courses
+  // -------------------------
   const cartCourseList = document.getElementById('cart-course-list');
   if (cartCourseList) {
     displayCart();
@@ -144,7 +158,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // -------------------------
   // Student Page: Display Registered Courses
+  // -------------------------
   const studentCourseListElement = document.getElementById('student-course-list');
   if (studentCourseListElement) {
     displayRegisteredCourses();
