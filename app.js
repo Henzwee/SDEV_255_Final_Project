@@ -30,7 +30,7 @@ app.use(session({
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-// ✅ Debugging Route to Verify `req.body`
+// ✅ Debugging Route: Check if req.body is received
 app.post('/api/debug', (req, res) => {
     console.log("🟢 Received Body:", req.body);
     res.json({ message: "✅ Debugging Success!", receivedData: req.body });
