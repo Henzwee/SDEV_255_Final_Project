@@ -1,39 +1,46 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
-const app = express();
+const cors = require('cors');
+const session = require('express-session');
 const mongoose = require("./Database/db.js");
 const User = require("./Database/User"); // Import the User model
 const courseRoutes = require("./Database/courseRoutes");
-const cors = require('cors');
-const session = require('express-session');
 
-app.use('/api', courseRoutes);
+const app = express();
+
+// ✅ FIX: Move `express.json()` & `express.urlencoded()` BEFORE your routes
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());  // ✅ Fixes "req.body undefined" issue
+app.use(express.urlencoded({ extended: true })); // ✅ Parses form data
+
+// ✅ Ensure API routes come AFTER middleware
+app.use('/api', courseRoutes);
+
+// ✅ Serve static files (docs directory)
 app.use(express.static(path.join(__dirname, 'docs')));
 
-// Session middleware
+// ✅ Session middleware
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set secure: true if you are using HTTPS
+    cookie: { secure: false } // Set secure: true if using HTTPS
 }));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'docs', 'index.html'));
+// ✅ Debugging Route to Verify `req.body`
+app.post('/api/debug', (req, res) => {
+    console.log("🟢 Received Body:", req.body);
+    res.json({ message: "✅ Debugging Success!", receivedData: req.body });
 });
 
-// Updated /login route with role authentication
+// ✅ Login Route (No Changes Here)
 app.post('/login', async (req, res) => {
-    const { username, password, role } = req.body; // Include role in the request body
+    const { username, password, role } = req.body;
     try {
-        const user = await User.findOne({ username: username, role: role }); // Query with username and role
+        const user = await User.findOne({ username: username, role: role });
         if (user) {
             user.verifyPassword(password, (err, isMatch) => {
                 if (err) {
@@ -57,14 +64,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/add_courses.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'docs', 'add_courses.html'));
-});
-
-app.get('/create_courses.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'docs', 'create_courses.html'));
-});
-
-app.get('/schedule.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'docs', 'schedule.html'));
-});
+// ✅ Serve HTML pages
+app.get('/add_courses.html', (req, res) => res.sendFile(path.join(__dirname, 'docs', 'add_courses.html')));
+app.get('/create_courses.html', (req, res) => res.sendFile(path.join(__dirname, 'docs', 'create_courses.html')));
+app.get('/schedule.html', (req, res) => res.sendFile(path.join(__dirname, 'docs', 'schedule.html')));
