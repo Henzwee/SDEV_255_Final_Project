@@ -127,6 +127,13 @@ document.addEventListener("DOMContentLoaded", function() {
         availableCourseList.appendChild(courseDiv);
       });
     }
+
+    function addToCart(course) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(course);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${course.courseName} added to cart`);
+    }
   }
 
   // -------------------------
