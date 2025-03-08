@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
   const apiUrl = "https://obsidian-sumptuous-peripheral.glitch.me/api/courses"; // Updated API URL
 
-  // -------------------------
   // Teacher Page Functionality
-  // -------------------------
   const courseListElement = document.getElementById('course-list');
   if (courseListElement) {
     fetch(apiUrl, {
@@ -56,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const courseData = {
-          courseId: new ObjectId(), // Generate a unique ObjectId for courseId
           courseName,
           teacher: teacherName,
           creditHours: parseInt(creditHours, 10),
@@ -87,9 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // -------------------------
   // Student Page: Available Courses
-  // -------------------------
   const availableCourseList = document.getElementById('available-course-list');
   if (availableCourseList) {
     fetch(apiUrl, {
@@ -122,9 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // -------------------------
   // Cart Page: Display and Remove Courses
-  // -------------------------
   const cartCourseList = document.getElementById('cart-course-list');
   if (cartCourseList) {
     displayCart();
@@ -151,9 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // -------------------------
   // Student Page: Display Registered Courses
-  // -------------------------
   const studentCourseListElement = document.getElementById('student-course-list');
   if (studentCourseListElement) {
     displayRegisteredCourses();
